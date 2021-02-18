@@ -1,6 +1,6 @@
 package warehouse.model
 
-import java.io.{BufferedWriter, File, FileWriter, PrintWriter}
+import java.io.FileWriter
 
 
 trait Generator[+T] {
@@ -68,18 +68,27 @@ object Generators {
 
 }
 
-object DataGenerator {
+object WarehouseInputDataGenerator {
   def createAndFillInputFiles(positionFileName: String, amountFileName: String)(countOfProduct: Int,
                                                                                 countOfWarehouses: Int,
                                                                                 maxCountOfAmountsForOneProduct: Int): Unit = {
     val positionWriter = new FileWriter(positionFileName)
     val amountWriter = new FileWriter(amountFileName)
-
-    positionWriter.write("positionId,warehouse,product,eventTime" + System.lineSeparator)
-    amountWriter.write("positionId,amount,eventTime" + System.lineSeparator)
     val countOfProductGenerator = Generators.choose(1, maxCountOfAmountsForOneProduct)
-    for (warehouse <- Generators.generateWarehousesPosition(countOfProduct, countOfWarehouses)) {
-      positionWriter.write(warehouse.productIterator.mkString(",") + System.lineSeparator)
+
+    def writeHeaders(): Unit = {
+      positionWriter.write("positionId,warehouse,product,eventTime" + System.lineSeparator)
+      amountWriter.write("positionId,amount,eventTime" + System.lineSeparator)
+    }
+
+    def fillInputFiles(): Unit = {
+      for (warehouse <- Generators.generateWarehousesPosition(countOfProduct, countOfWarehouses)) {
+        positionWriter.write(warehouse.productIterator.mkString(",") + System.lineSeparator)
+        generateAndWriteWarehousesAmount(warehouse)
+      }
+    }
+
+    def generateAndWriteWarehousesAmount(warehouse: (Int, String, String, Long)): Unit = {
       val warehousesAmountGenerator = Generators
         .warehousesAmount(
           warehouse._1,
@@ -94,14 +103,21 @@ object DataGenerator {
             .productIterator
             .mkString(",") + System.lineSeparator)
     }
-    positionWriter.flush()
-    amountWriter.flush()
+
+    def flushFiles(): Unit = {
+      positionWriter.flush()
+      amountWriter.flush()
+    }
+
+    writeHeaders()
+    fillInputFiles()
+    flushFiles()
   }
 }
 
 object DataGeneratorMain {
   def main(args: Array[String]): Unit = {
-   DataGenerator.createAndFillInputFiles(
+   WarehouseInputDataGenerator.createAndFillInputFiles(
      "src/main/resources/warehouse/warehouse_positions.csv",
      "src/main/resources/warehouse/warehouse_amounts.csv")(20, 7, 5)
   }
