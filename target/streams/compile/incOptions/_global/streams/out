@@ -1,0 +1,22 @@
+[0m[[0m[0mdebug[0m] [0m[0mCreated transactional ClassFileManager with tempDir = /Users/msadovenko/Desktop/courses/spark/Warehouse-spark-first-task/target/scala-2.12/classes.bak[0m
+[0m[[0m[0mdebug[0m] [0m[0mAbout to delete class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0mWe backup class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0mRegistering generated classes:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Generators$$anon$6.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Generators$$anon$4.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	DataGenerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Generators.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Generators$$anon$3.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WarehouseStatistics.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Generator$$anon$2.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Generators$$anon$5.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	DataGeneratorMain.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Generators$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Main.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Generator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WarehouseStatistics$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Main$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	DataGeneratorMain$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Generator$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	DataGenerator$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mRemoving the temporary directory used for backing up class files: /Users/msadovenko/Desktop/courses/spark/Warehouse-spark-first-task/target/scala-2.12/classes.bak[0m

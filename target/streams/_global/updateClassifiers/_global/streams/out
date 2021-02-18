@@ -1,0 +1,4 @@
+[debug] not up to date. inChanged = true, force = false
+[debug] Updating ProjectRef(uri("file:/Users/msadovenko/Desktop/courses/spark/Warehouse-spark-first-task/"), "warehouse-spark-first-task")...
+[debug] Done updating ProjectRef(uri("file:/Users/msadovenko/Desktop/courses/spark/Warehouse-spark-first-task/"), "warehouse-spark-first-task")
+[warn] There may be incompatibilities among your library dependencies; run 'evicted' to see detailed eviction warnings.

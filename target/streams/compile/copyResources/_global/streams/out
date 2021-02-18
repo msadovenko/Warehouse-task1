@@ -1,0 +1,3 @@
+[0m[[0m[0mdebug[0m] [0m[0mCopy resource mappings: [0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/Users/msadovenko/Desktop/courses/spark/Warehouse-spark-first-task/src/main/resources/warehouse/warehouse_amounts.csv,/Users/msadovenko/Desktop/courses/spark/Warehouse-spark-first-task/target/scala-2.12/classes/warehouse/warehouse_amounts.csv)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(/Users/msadovenko/Desktop/courses/spark/Warehouse-spark-first-task/src/main/resources/warehouse/warehouse_positions.csv,/Users/msadovenko/Desktop/courses/spark/Warehouse-spark-first-task/target/scala-2.12/classes/warehouse/warehouse_positions.csv)[0m
