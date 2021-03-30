@@ -5,12 +5,15 @@ import org.apache.spark.sql.types.{DecimalType, DoubleType, IntegerType, StringT
 import warehouse.model.WarehouseStatistics
 
 object Main {
-  val spark: SparkSession = SparkSession.builder.master("local").getOrCreate
+  val spark: SparkSession = SparkSession.builder.master("local[*]").getOrCreate
   spark.sparkContext.setLogLevel("ERROR")
 
   def main(args: Array[String]): Unit = {
     val warehousePositions = getWarehousePosition("src/main/resources/warehouse/warehouse_positions.csv")
     val warehouseAmounts = getWarehouseAmounts("src/main/resources/warehouse/warehouse_amounts.csv")
+
+    warehousePositions.printSchema()
+    warehouseAmounts.printSchema()
 
     val currentPositions = WarehouseStatistics.currentPosition(warehousePositions, warehouseAmounts)
     println("Current positions:")
