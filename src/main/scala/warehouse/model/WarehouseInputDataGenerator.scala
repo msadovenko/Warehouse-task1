@@ -2,6 +2,8 @@ package warehouse.model
 
 import java.io.FileWriter
 
+import warehouse.util.Config.config
+
 
 trait Generator[+T] {
   self =>
@@ -62,8 +64,6 @@ object Generators {
     val timeGenerator = choose(startTime, startTime + timeCounts + 1)
     for (amount <- choose(startAmount, maxAmount))
       yield (positionId, amount, timeGenerator.generate)
-
-
   }
 
 }
@@ -118,9 +118,8 @@ object WarehouseInputDataGenerator {
 object DataGeneratorMain {
   def main(args: Array[String]): Unit = {
    WarehouseInputDataGenerator.createAndFillInputFiles(
-     "src/main/resources/warehouse/warehouse_positions.csv",
-     "src/main/resources/warehouse/warehouse_amounts.csv")(20, 7, 5)
+     config("warehousePositionFileName"),
+     config("warehouseAmountFileName"))(20, 7, 5)
   }
-
 }
 

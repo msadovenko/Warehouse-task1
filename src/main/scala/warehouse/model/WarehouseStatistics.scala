@@ -1,7 +1,7 @@
 package warehouse.model
 
 import org.apache.spark.sql.{DataFrame, SparkSession, functions}
-import org.apache.spark.sql.expressions.Window
+import org.apache.spark.sql.expressions.{Window, WindowSpec}
 import org.apache.spark.sql.functions.{avg, col, desc, max, min, round, row_number}
 
 object WarehouseStatistics {
@@ -9,10 +9,9 @@ object WarehouseStatistics {
   def currentPosition(warehousePositions: DataFrame, warehouseAmounts: DataFrame): DataFrame = {
     val currentAmountPositions = findCurrentAmountForPosition(warehouseAmounts)
     warehousePositions
-      .join(currentAmountPositions)
-      .where(warehousePositions("positionId") === currentAmountPositions("positionId"))
+      .join(currentAmountPositions, warehousePositions("positionId") === currentAmountPositions("positionId"))
       .select(
-        warehousePositions("positionId"),
+        currentAmountPositions("positionID"),
         warehousePositions("warehouse"),
         warehousePositions("product"),
         currentAmountPositions("amount")
@@ -21,23 +20,16 @@ object WarehouseStatistics {
   }
 
   def statistics(warehousePositions: DataFrame, warehouseAmounts: DataFrame): DataFrame = {
-    val windowSpec =
-      Window
-        .partitionBy(warehousePositions("positionId"), warehousePositions("warehouse"), warehousePositions("product"))
-        .orderBy(warehousePositions("positionId"))
+    val aggAmountDF = warehouseAmounts
+      .groupBy(col("positionID"))
+      .agg(
+        max(col("amount")).as("max"),
+        min(col("amount")).as("min"),
+        avg(col("amount")).as("avg"))
+      .select("positionID", "avg", "min", "max")
 
-    val windowSpecAgg =
-      Window
-        .partitionBy(warehousePositions("positionId"), warehousePositions("warehouse"), warehousePositions("product"))
-
-    warehousePositions
-      .join(warehouseAmounts)
-      .where(warehousePositions("positionId") === warehouseAmounts("positionId"))
-      .withColumn("row", row_number().over(windowSpec))
-      .withColumn("max", max(col("amount")).over(windowSpecAgg))
-      .withColumn("min", min(col("amount")).over(windowSpecAgg))
-      .withColumn("avg", round(avg(col("amount")).over(windowSpecAgg), 2))
-      .where(col("row") === 1)
+    val aggregatedDF = aggAmountDF
+      .join(warehousePositions, warehousePositions("positionID") === aggAmountDF("positionID"))
       .select(
         warehousePositions("positionId"),
         warehousePositions("warehouse"),
@@ -47,15 +39,19 @@ object WarehouseStatistics {
         col("avg")
       )
       .orderBy("positionId")
+    aggregatedDF
   }
 
   private def findCurrentAmountForPosition(warehouseAmounts: DataFrame): DataFrame = {
-    val windowSpec = Window.partitionBy("positionId").orderBy(desc("eventTime"))
+    val windowSpec: WindowSpec = Window.partitionBy("positionId")
     warehouseAmounts
-      .withColumn("row", row_number().over(windowSpec))
-      .where(col("row") === 1)
-      .select(col("positionId"), col("amount"))
-      .orderBy(col("positionId"))
+      .select(
+        col("positionId"),
+        col("amount"),
+        max(col("eventTime")).over(windowSpec).as("last_time")
+      )
+      .filter(col("eventTime") === col("last_time"))
+
   }
 }
 

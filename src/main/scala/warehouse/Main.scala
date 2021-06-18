@@ -1,29 +1,47 @@
 package warehouse
 
+
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.apache.spark.sql.types.{DecimalType, DoubleType, IntegerType, StringType, StructField, StructType}
+import org.apache.spark.sql.types.{DecimalType, DoubleType, IntegerType, LongType, StringType, StructField, StructType}
 import warehouse.model.WarehouseStatistics
+import warehouse.util.Config.config
 
 object Main {
   val spark: SparkSession = SparkSession.builder.master("local[*]").getOrCreate
   spark.sparkContext.setLogLevel("ERROR")
 
   def main(args: Array[String]): Unit = {
-    val warehousePositions = getWarehousePosition("src/main/resources/warehouse/warehouse_positions.csv")
-    val warehouseAmounts = getWarehouseAmounts("src/main/resources/warehouse/warehouse_amounts.csv")
+    val warehousePositions = getWarehousePosition(config("warehousePositionFileName"))
+    val warehouseAmounts = getWarehouseAmounts(config("warehouseAmountFileName"))
 
-    warehousePositions.printSchema()
-    warehouseAmounts.printSchema()
+    firstTask(warehousePositions, warehouseAmounts)
+    secondTask(warehousePositions, warehouseAmounts)
+
+    spark.stop()
+  }
+
+  def firstTask(warehousePositions: DataFrame, warehouseAmounts: DataFrame): Unit = {
+    val startTime = System.currentTimeMillis()
 
     val currentPositions = WarehouseStatistics.currentPosition(warehousePositions, warehouseAmounts)
     println("Current positions:")
     currentPositions.show()
 
+    val finishTime = System.currentTimeMillis()
+    val executedTime = finishTime - startTime
+    println(s"Current positions were calculated in $executedTime ms")
+  }
+
+  def secondTask(warehousePositions: DataFrame, warehouseAmounts: DataFrame): Unit = {
+    val startTime = System.currentTimeMillis()
+
     val statistics = WarehouseStatistics.statistics(warehousePositions, warehouseAmounts)
-    println("Statistics:")
+    println("Statistic:")
     statistics.show()
 
-    spark.stop()
+    val finishTime = System.currentTimeMillis()
+    val executedTime = finishTime - startTime
+    println(s"Statistic were calculated in $executedTime ms")
   }
 
   def getWarehousePosition(filename: String): DataFrame =
@@ -42,11 +60,11 @@ object Main {
     .add(StructField("positionId", IntegerType, nullable = false))
     .add(StructField("warehouse", StringType, nullable = false))
     .add(StructField("product", StringType, nullable = false))
-    .add(StructField("eventTime", DecimalType.SYSTEM_DEFAULT , nullable = false))
+    .add(StructField("eventTime", LongType, nullable = false))
 
 
   private def getSchemaForWarehouseAmounts: StructType = new StructType()
     .add(StructField("positionId", IntegerType, nullable = false))
     .add(StructField("amount", DoubleType, nullable = false))
-    .add(StructField("eventTime", DecimalType.SYSTEM_DEFAULT , nullable = false))
+    .add(StructField("eventTime", LongType , nullable = false))
 }
