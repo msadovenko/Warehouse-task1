@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Warehouse.iml" filepath="$PROJECT_DIR$/.idea/modules/Warehouse.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Warehouse-build.iml" filepath="$PROJECT_DIR$/.idea/modules/Warehouse-build.iml" />
-    </modules>
-  </component>
-</project>
